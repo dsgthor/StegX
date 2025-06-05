@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Image Steganography Tool</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #2d2d2d 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #e0e0e0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: linear-gradient(145deg, #1e1e1e, #2a2a2a);
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+            color: #ffffff;
+            padding: 30px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .main-content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 25px;
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            background: linear-gradient(145deg, #242424, #1a1a1a);
+        }
+
+        .section:hover {
+            border-color: #4a9eff;
+            box-shadow: 0 5px 15px rgba(74,158,255,0.2);
+        }
+
+        .section h2 {
+            color: #ffffff;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+        }
+
+        .section h2::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(135deg, #4a9eff, #00d4ff);
+            margin-right: 15px;
+            border-radius: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #e0e0e0;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.05);
+            color: #ffffff;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #4a9eff;
+            background: rgba(255,255,255,0.1);
+            box-shadow: 0 0 0 3px rgba(74,158,255,0.2);
+        }
+
+        .form-control::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .file-input {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-input-label {
+            display: block;
+            padding: 12px 15px;
+            background: rgba(255,255,255,0.05);
+            border: 2px dashed rgba(255,255,255,0.3);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: rgba(255,255,255,0.7);
+            backdrop-filter: blur(10px);
+        }
+
+        .file-input-label:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: #4a9eff;
+            color: #4a9eff;
+        }
+
+        .file-input-label.active {
+            background: rgba(74,158,255,0.2);
+            border-color: #4a9eff;
+            color: #ffffff;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+            font-family: monospace;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin: 5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4a9eff, #0066cc);
+            color: white;
+            border: 1px solid rgba(74,158,255,0.3);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, #0066cc, #004499);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74,158,255,0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #00d4aa, #00a085);
+            color: white;
+            border: 1px solid rgba(0,212,170,0.3);
+        }
+
+        .btn-success:hover:not(:disabled) {
+            background: linear-gradient(135deg, #00a085, #007a63);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,212,170,0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .status.success {
+            background: rgba(0,212,170,0.2);
+            color: #00ffcc;
+            border: 1px solid rgba(0,212,170,0.4);
+        }
+
+        .status.error {
+            background: rgba(255,107,107,0.2);
+            color: #ff6b6b;
+            border: 1px solid rgba(255,107,107,0.4);
+        }
+
+        .status.info {
+            background: rgba(74,158,255,0.2);
+            color: #4a9eff;
+            border: 1px solid rgba(74,158,255,0.4);
+        }
+
+        .download-links {
+            margin-top: 20px;
+        }
+
+        .download-links a {
+            display: inline-block;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .method-info {
+            font-size: 0.9em;
+            color: rgba(255,255,255,0.6);
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4a9eff, #00d4ff);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 20px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔒 Secure Steganography</h1>
+            <p>Hide encrypted messages within PNG images</p>
+        </div>
+
+        <div class="main-content">
+            <!-- Embed Section -->
+            <div class="section">
+                <h2>📤 Embed Message</h2>
+                
+                <div class="form-group">
+                    <label for="coverImage">Cover Image (PNG)</label>
+                    <div class="file-input">
+                        <input type="file" id="coverImage" accept=".png,image/png">
+                        <label for="coverImage" class="file-input-label">
+                            📁 Choose PNG image file
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="secretMessage">Secret Message</label>
+                    <textarea id="secretMessage" class="form-control" placeholder="Enter your secret message here..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="messageFile">Or Upload Text File</label>
+                    <div class="file-input">
+                        <input type="file" id="messageFile" accept=".txt,text/plain">
+                        <label for="messageFile" class="file-input-label">
+                            📄 Choose text file (optional)
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="embedPassword">Encryption Password</label>
+                    <input type="password" id="embedPassword" class="form-control" placeholder="Enter a strong password">
+                </div>
+
+                <div class="form-group">
+                    <label for="embedMethod">Steganography Method</label>
+                    <select id="embedMethod" class="form-control">
+                        <option value="lsb">LSB (Least Significant Bit)</option>
+                        <option value="lsb-matching">LSB Matching</option>
+                    </select>
+                    <div class="method-info">LSB replaces the least significant bit, LSB Matching uses ±1 modification</div>
+                </div>
+
+                <button id="embedBtn" class="btn btn-primary" disabled>🔐 Embed Message</button>
+                <div class="progress-bar" id="embedProgress">
+                    <div class="progress-fill"></div>
+                </div>
+                <div class="download-links" id="embedDownload"></div>
+            </div>
+
+            <!-- Extract Section -->
+            <div class="section">
+                <h2>📥 Extract Message</h2>
+                
+                <div class="form-group">
+                    <label for="stegoImage">Stego Image (PNG)</label>
+                    <div class="file-input">
+                        <input type="file" id="stegoImage" accept=".png,image/png">
+                        <label for="stegoImage" class="file-input-label">
+                            📁 Choose PNG image with hidden message
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="extractPassword">Decryption Password</label>
+                    <input type="password" id="extractPassword" class="form-control" placeholder="Enter the password used for embedding">
+                </div>
+
+                <div class="form-group">
+                    <label for="extractMethod">Steganography Method</label>
+                    <select id="extractMethod" class="form-control">
+                        <option value="lsb">LSB (Least Significant Bit)</option>
+                        <option value="lsb-matching">LSB Matching</option>
+                    </select>
+                </div>
+
+                <button id="extractBtn" class="btn btn-success" disabled>🔓 Extract Message</button>
+                <div class="progress-bar" id="extractProgress">
+                    <div class="progress-fill"></div>
+                </div>
+                <div id="extractedMessage" style="margin-top: 20px;"></div>
+                <div class="download-links" id="extractDownload"></div>
+            </div>
+
+            <!-- Status Messages -->
+            <div id="status" class="status"></div>
+        </div>
+    </div>
+
+    <script>
+        class SecureSteganography {
+            constructor() {
+                this.initializeEventListeners();
+                this.updateButtonStates();
+            }
+
+            initializeEventListeners() {
+                // File input listeners
+                document.getElementById('coverImage').addEventListener('change', (e) => {
+                    this.handleFileSelect(e, 'cover');
+                    this.updateButtonStates();
+                });
+
+                document.getElementById('stegoImage').addEventListener('change', (e) => {
+                    this.handleFileSelect(e, 'stego');
+                    this.updateButtonStates();
+                });
+
+                document.getElementById('messageFile').addEventListener('change', (e) => {
+                    this.handleMessageFile(e);
+                });
+
+                // Text input listeners
+                document.getElementById('secretMessage').addEventListener('input', () => {
+                    this.updateButtonStates();
+                });
+
+                document.getElementById('embedPassword').addEventListener('input', () => {
+                    this.updateButtonStates();
+                });
+
+                document.getElementById('extractPassword').addEventListener('input', () => {
+                    this.updateButtonStates();
+                });
+
+                // Button listeners
+                document.getElementById('embedBtn').addEventListener('click', () => {
+                    this.embedMessage();
+                });
+
+                document.getElementById('extractBtn').addEventListener('click', () => {
+                    this.extractMessage();
+                });
+            }
+
+            handleFileSelect(event, type) {
+                const file = event.target.files[0];
+                const label = event.target.nextElementSibling;
+                
+                if (file) {
+                    label.textContent = `✅ ${file.name}`;
+                    label.classList.add('active');
+                } else {
+                    if (type === 'cover') {
+                        label.textContent = '📁 Choose PNG image file';
+                    } else {
+                        label.textContent = '📁 Choose PNG image with hidden message';
+                    }
+                    label.classList.remove('active');
+                }
+            }
+
+            async handleMessageFile(event) {
+                const file = event.target.files[0];
+                const label = event.target.nextElementSibling;
+                
+                if (file) {
+                    try {
+                        const text = await this.readFileAsText(file);
+                        document.getElementById('secretMessage').value = text;
+                        label.textContent = `✅ ${file.name}`;
+                        label.classList.add('active');
+                        this.updateButtonStates();
+                    } catch (error) {
+                        this.showStatus('Error reading file: ' + error.message, 'error');
+                        label.textContent = '📄 Choose text file (optional)';
+                        label.classList.remove('active');
+                    }
+                } else {
+                    label.textContent = '📄 Choose text file (optional)';
+                    label.classList.remove('active');
+                }
+            }
+
+            updateButtonStates() {
+                const coverImage = document.getElementById('coverImage').files[0];
+                const secretMessage = document.getElementById('secretMessage').value.trim();
+                const embedPassword = document.getElementById('embedPassword').value.trim();
+                const embedBtn = document.getElementById('embedBtn');
+
+                embedBtn.disabled = !(coverImage && secretMessage && embedPassword);
+
+                const stegoImage = document.getElementById('stegoImage').files[0];
+                const extractPassword = document.getElementById('extractPassword').value.trim();
+                const extractBtn = document.getElementById('extractBtn');
+
+                extractBtn.disabled = !(stegoImage && extractPassword);
+            }
+
+            async readFileAsText(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.onerror = (e) => reject(new Error('Failed to read file'));
+                    reader.readAsText(file, 'UTF-8');
+                });
+            }
+
+            async loadImageAsCanvas(file) {
+                return new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        ctx.drawImage(img, 0, 0);
+                        resolve({ canvas, ctx, width: img.width, height: img.height });
+                    };
+                    img.onerror = () => reject(new Error('Failed to load image'));
+                    img.src = URL.createObjectURL(file);
+                });
+            }
+
+            async deriveKey(password, salt) {
+                const encoder = new TextEncoder();
+                const keyMaterial = await crypto.subtle.importKey(
+                    'raw',
+                    encoder.encode(password),
+                    { name: 'PBKDF2' },
+                    false,
+                    ['deriveBits', 'deriveKey']
+                );
+
+                return crypto.subtle.deriveKey(
+                    {
+                        name: 'PBKDF2',
+                        salt: salt,
+                        iterations: 100000,
+                        hash: 'SHA-256'
+                    },
+                    keyMaterial,
+                    { name: 'AES-GCM', length: 256 },
+                    false,
+                    ['encrypt', 'decrypt']
+                );
+            }
+
+            async encryptMessage(message, password) {
+                const encoder = new TextEncoder();
+                const data = encoder.encode(message);
+                const salt = crypto.getRandomValues(new Uint8Array(16));
+                const iv = crypto.getRandomValues(new Uint8Array(12));
+                
+                const key = await this.deriveKey(password, salt);
+                const encrypted = await crypto.subtle.encrypt(
+                    { name: 'AES-GCM', iv: iv },
+                    key,
+                    data
+                );
+
+                // Combine salt + iv + encrypted data
+                const result = new Uint8Array(salt.length + iv.length + encrypted.byteLength);
+                result.set(salt, 0);
+                result.set(iv, salt.length);
+                result.set(new Uint8Array(encrypted), salt.length + iv.length);
+                
+                return result;
+            }
+
+            async decryptMessage(encryptedData, password) {
+                if (encryptedData.length < 28) {
+                    throw new Error('Invalid encrypted data');
+                }
+
+                const salt = encryptedData.slice(0, 16);
+                const iv = encryptedData.slice(16, 28);
+                const encrypted = encryptedData.slice(28);
+
+                const key = await this.deriveKey(password, salt);
+                const decrypted = await crypto.subtle.decrypt(
+                    { name: 'AES-GCM', iv: iv },
+                    key,
+                    encrypted
+                );
+
+                const decoder = new TextDecoder();
+                return decoder.decode(decrypted);
+            }
+
+            dataToBits(data) {
+                const bits = [];
+                for (let i = 0; i < data.length; i++) {
+                    for (let j = 7; j >= 0; j--) {
+                        bits.push((data[i] >> j) & 1);
+                    }
+                }
+                return bits;
+            }
+
+            bitsToData(bits) {
+                const data = new Uint8Array(Math.ceil(bits.length / 8));
+                for (let i = 0; i < bits.length; i++) {
+                    const byteIndex = Math.floor(i / 8);
+                    const bitIndex = 7 - (i % 8);
+                    if (bits[i]) {
+                        data[byteIndex] |= (1 << bitIndex);
+                    }
+                }
+                return data;
+            }
+
+            embedLSB(imageData, bits) {
+                const data = imageData.data;
+                const maxBits = Math.floor(data.length * 3 / 4); // Only use RGB channels
+                
+                if (bits.length > maxBits - 32) {
+                    throw new Error('Message too large for image capacity');
+                }
+
+                // Add length header (32 bits)
+                const lengthBits = [];
+                for (let i = 31; i >= 0; i--) {
+                    lengthBits.push((bits.length >> i) & 1);
+                }
+
+                const allBits = lengthBits.concat(bits);
+                
+                // Embed all bits systematically
+                for (let bit = 0; bit < allBits.length; bit++) {
+                    const channelIndex = bit % 3; // 0=R, 1=G, 2=B
+                    const currentPixel = Math.floor(bit / 3);
+                    const dataIndex = currentPixel * 4 + channelIndex;
+                    
+                    if (dataIndex < data.length) {
+                        data[dataIndex] = (data[dataIndex] & 0xFE) | allBits[bit];
+                    }
+                }
+
+                return imageData;
+            }
+
+            embedLSBMatching(imageData, bits) {
+                const data = imageData.data;
+                const maxBits = Math.floor(data.length * 3 / 4);
+                
+                if (bits.length > maxBits - 32) {
+                    throw new Error('Message too large for image capacity');
+                }
+
+                const lengthBits = [];
+                for (let i = 31; i >= 0; i--) {
+                    lengthBits.push((bits.length >> i) & 1);
+                }
+
+                const allBits = lengthBits.concat(bits);
+                
+                // Embed all bits systematically
+                for (let bit = 0; bit < allBits.length; bit++) {
+                    const channelIndex = bit % 3; // 0=R, 1=G, 2=B
+                    const currentPixel = Math.floor(bit / 3);
+                    const dataIndex = currentPixel * 4 + channelIndex;
+                    
+                    if (dataIndex < data.length) {
+                        const pixelValue = data[dataIndex];
+                        const lsb = pixelValue & 1;
+                        
+                        if (lsb !== allBits[bit]) {
+                            if (pixelValue === 255) {
+                                data[dataIndex] = 254;
+                            } else if (pixelValue === 0) {
+                                data[dataIndex] = 1;
+                            } else {
+                                data[dataIndex] = pixelValue + (Math.random() < 0.5 ? 1 : -1);
+                            }
+                        }
+                    }
+                }
+
+                return imageData;
+            }
+
+            extractLSB(imageData) {
+                const data = imageData.data;
+                
+                // Extract length header (32 bits)
+                const lengthBits = [];
+                let pixelIndex = 0;
+                
+                for (let bit = 0; bit < 32; bit++) {
+                    const channelIndex = bit % 3; // 0=R, 1=G, 2=B
+                    const currentPixel = Math.floor(bit / 3);
+                    const dataIndex = currentPixel * 4 + channelIndex;
+                    lengthBits.push(data[dataIndex] & 1);
+                }
+
+                let messageLength = 0;
+                for (let i = 0; i < 32; i++) {
+                    messageLength = (messageLength << 1) | lengthBits[i];
+                }
+
+                if (messageLength <= 0 || messageLength > (data.length * 3 / 8) - 4) {
+                    throw new Error('Invalid message length or no hidden message found');
+                }
+
+                // Extract message bits starting after the 32-bit header
+                const messageBits = [];
+                for (let bit = 0; bit < messageLength; bit++) {
+                    const totalBitIndex = 32 + bit; // Skip header
+                    const channelIndex = totalBitIndex % 3;
+                    const currentPixel = Math.floor(totalBitIndex / 3);
+                    const dataIndex = currentPixel * 4 + channelIndex;
+                    
+                    if (dataIndex < data.length) {
+                        messageBits.push(data[dataIndex] & 1);
+                    }
+                }
+
+                return messageBits;
+            }
+
+            showStatus(message, type) {
+                const status = document.getElementById('status');
+                status.textContent = message;
+                status.className = `status ${type}`;
+                status.style.display = 'block';
+                
+                setTimeout(() => {
+                    status.style.display = 'none';
+                }, 5000);
+            }
+
+            showProgress(elementId, show) {
+                const progress = document.getElementById(elementId);
+                progress.style.display = show ? 'block' : 'none';
+                if (show) {
+                    const fill = progress.querySelector('.progress-fill');
+                    fill.style.width = '0%';
+                    setTimeout(() => fill.style.width = '100%', 100);
+                }
+            }
+
+            async embedMessage() {
+                try {
+                    this.showProgress('embedProgress', true);
+                    this.showStatus('Embedding message...', 'info');
+
+                    const coverImage = document.getElementById('coverImage').files[0];
+                    const secretMessage = document.getElementById('secretMessage').value;
+                    const password = document.getElementById('embedPassword').value;
+                    const method = document.getElementById('embedMethod').value;
+
+                    // Load image
+                    const { canvas, ctx } = await this.loadImageAsCanvas(coverImage);
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+                    // Encrypt message
+                    const encryptedData = await this.encryptMessage(secretMessage, password);
+                    const bits = this.dataToBits(encryptedData);
+
+                    // Embed using selected method
+                    let modifiedImageData;
+                    if (method === 'lsb') {
+                        modifiedImageData = this.embedLSB(imageData, bits);
+                    } else {
+                        modifiedImageData = this.embedLSBMatching(imageData, bits);
+                    }
+
+                    // Create output image
+                    ctx.putImageData(modifiedImageData, 0, 0);
+                    
+                    canvas.toBlob((blob) => {
+                        const url = URL.createObjectURL(blob);
+                        const downloadLink = document.createElement('a');
+                        downloadLink.href = url;
+                        downloadLink.download = 'stego_image.png';
+                        downloadLink.className = 'btn btn-success';
+                        downloadLink.textContent = '💾 Download Stego Image';
+                        
+                        const downloadContainer = document.getElementById('embedDownload');
+                        downloadContainer.innerHTML = '';
+                        downloadContainer.appendChild(downloadLink);
+                        
+                        this.showStatus('Message embedded successfully!', 'success');
+                        this.showProgress('embedProgress', false);
+                    }, 'image/png');
+
+                } catch (error) {
+                    this.showStatus('Embedding failed: ' + error.message, 'error');
+                    this.showProgress('embedProgress', false);
+                }
+            }
+
+            async extractMessage() {
+                try {
+                    this.showProgress('extractProgress', true);
+                    this.showStatus('Extracting message...', 'info');
+
+                    const stegoImage = document.getElementById('stegoImage').files[0];
+                    const password = document.getElementById('extractPassword').value;
+                    const method = document.getElementById('extractMethod').value;
+
+                    // Load image
+                    const { canvas, ctx } = await this.loadImageAsCanvas(stegoImage);
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+                    // Extract bits
+                    const bits = this.extractLSB(imageData); // Both methods use same extraction
+                    const encryptedData = this.bitsToData(bits);
+
+                    // Decrypt message
+                    const decryptedMessage = await this.decryptMessage(encryptedData, password);
+
+                    // Display result
+                    const messageContainer = document.getElementById('extractedMessage');
+                    messageContainer.innerHTML = `
+                        <div style="background: linear-gradient(145deg, #2a2a2a, #1e1e1e); padding: 20px; border-radius: 12px; border: 1px solid rgba(74,158,255,0.3); box-shadow: 0 8px 32px rgba(0,0,0,0.3);">
+                            <h4 style="color: #4a9eff; margin-bottom: 15px; display: flex; align-items: center;">
+                                <span style="margin-right: 10px;">🔓</span> Extracted Message:
+                            </h4>
+                            <pre style="white-space: pre-wrap; word-wrap: break-word; font-family: 'Consolas', 'Monaco', monospace; background: rgba(0,0,0,0.4); color: #e0e0e0; padding: 15px; border-radius: 8px; margin: 0; border: 1px solid rgba(255,255,255,0.1); line-height: 1.5;">${decryptedMessage}</pre>
+                        </div>
+                    `;
+
+                    // Create download link
+                    const blob = new Blob([decryptedMessage], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = url;
+                    downloadLink.download = 'extracted_message.txt';
+                    downloadLink.className = 'btn btn-primary';
+                    downloadLink.textContent = '💾 Download as Text File';
+                    
+                    const downloadContainer = document.getElementById('extractDownload');
+                    downloadContainer.innerHTML = '';
+                    downloadContainer.appendChild(downloadLink);
+
+                    this.showStatus('Message extracted successfully!', 'success');
+                    this.showProgress('extractProgress', false);
+
+                } catch (error) {
+                    this.showStatus('Extraction failed: ' + error.message + ' (Check password and method)', 'error');
+                    this.showProgress('extractProgress', false);
+                    document.getElementById('extractedMessage').innerHTML = '';
+                    document.getElementById('extractDownload').innerHTML = '';
+                }
+            }
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => {
+            new SecureSteganography();
+        });
+    </script>
+</body>
+</html>

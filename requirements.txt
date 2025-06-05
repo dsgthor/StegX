@@ -1,0 +1,98 @@
+# Secure Image Steganography Tool - Requirements
+# This file documents the requirements for the steganography application
+
+# =================================================================
+# BROWSER REQUIREMENTS
+# =================================================================
+
+# Modern Web Browser with the following APIs:
+# - Web Crypto API (for AES encryption and PBKDF2 key derivation)
+# - Canvas API (for image manipulation and pixel data access)
+# - File API (for file reading and blob creation)
+# - FileReader API (for reading uploaded files)
+# - Blob API (for creating downloadable files)
+
+# Minimum Browser Versions:
+# - Google Chrome 60+
+# - Mozilla Firefox 55+
+# - Safari 11+
+# - Microsoft Edge 79+
+
+# =================================================================
+# DEVELOPMENT SERVER REQUIREMENTS (OPTIONAL)
+# =================================================================
+
+# Python (for local development server)
+# python>=3.6
+
+# Node.js (alternative for local development server)
+# node>=12.0.0
+
+# PHP (alternative for local development server)
+# php>=7.0
+
+# =================================================================
+# NO RUNTIME DEPENDENCIES
+# =================================================================
+
+# This application is a single HTML file with embedded CSS and JavaScript.
+# It does not require any external libraries, frameworks, or runtime dependencies.
+# All functionality is implemented using native browser APIs.
+
+# The application runs entirely client-side and does not require:
+# - Server-side processing
+# - Database connections
+# - External API calls
+# - Third-party JavaScript libraries
+# - Package managers (npm, pip, composer, etc.)
+
+# =================================================================
+# SYSTEM REQUIREMENTS
+# =================================================================
+
+# Operating System: Any OS that supports a modern web browser
+# - Windows 10+
+# - macOS 10.13+
+# - Linux (Ubuntu 18.04+, or equivalent)
+# - iOS 11+ (Safari)
+# - Android 7+ (Chrome)
+
+# Memory: Minimum 2GB RAM (4GB+ recommended for large images)
+# Storage: Minimal (single HTML file ~50KB)
+# Network: Not required (application works offline)
+
+# =================================================================
+# DEVELOPMENT TOOLS (OPTIONAL)
+# =================================================================
+
+# For development and contribution:
+# - Text editor or IDE (VS Code, Sublime Text, etc.)
+# - Git for version control
+# - Modern web browser with developer tools
+# - Local web server (for testing, though not strictly required)
+
+# =================================================================
+# SECURITY REQUIREMENTS
+# =================================================================
+
+# The application requires HTTPS in production for:
+# - Web Crypto API functionality
+# - Secure random number generation
+# - Protection against man-in-the-middle attacks
+
+# Note: File:// protocol works for local testing but HTTPS is recommended for production
+
+# =================================================================
+# IMAGE FORMAT REQUIREMENTS
+# =================================================================
+
+# Input Images:
+# - PNG format only (lossless compression required)
+# - Minimum size: 100x100 pixels
+# - Maximum size: Limited by browser memory (typically 4096x4096 pixels)
+# - Color depth: 24-bit RGB or 32-bit RGBA
+
+# Output Images:
+# - PNG format (maintains lossless quality)
+# - Same dimensions as input image
+# - Minimal visual difference from original
