@@ -1,1 +1,1 @@
-web: python secure_stego_app.py
+web: gunicorn secure_stego_app.py
