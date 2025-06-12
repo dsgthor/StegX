@@ -28,6 +28,7 @@ Flask>=2.0.0
 bcrypt>=3.2.0
 qrcode>=7.3
 Pillow>=8.0.0
+numpy
 
 # Node.js (alternative for local development server)
 # node>=12.0.0
